@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    app: worker
+spec:
+  selector:
+    matchLabels:
+      app: worker
+  replicas: 1 # Start with a single worker for testing due to high memory use
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: worker-server
+        # *** IMPORTANT: REPLACE with your actual Docker image path (You will build this later) ***
+        image: nikkikr16/demucs-worker:v1 
+        resources:
+          # CRITICAL: Allocate significant resources for Demucs (at least 6GB is required)
+          limits:
+            cpu: "4000m" # 4 CPUs
+            memory: "8Gi" # 8 GB RAM (recommended minimum for separation)
+          requests:
+            cpu: "1000m" # 1 CPU to start
+            memory: "6Gi" # 6 GB RAM
+        env:
+        # Link to the deployed 'redis' service (internal cluster DNS name)
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        # Min.io connection details 
+        - name: MINIO_HOST
+          value: "minio"
+        - name: MINIO_PORT
+          value: "9000"
+        - name: MINIO_ACCESS_KEY
+          value: "rootuser"
+        - name: MINIO_SECRET_KEY
+          value: "rootpass123"
+

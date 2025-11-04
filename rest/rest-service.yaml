@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rest-service
+  labels:
+    app: rest
+spec:
+  # CRITICAL for GKE compatibility, enables external traffic routing
+  type: NodePort 
+  ports:
+    - protocol: "TCP"
+      port: 5000
+      targetPort: 5000
+  selector:
+    app: rest
+

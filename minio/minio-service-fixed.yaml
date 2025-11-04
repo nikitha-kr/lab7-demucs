@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  labels:
+    app: minio
+spec:
+  # ClusterIP is the standard internal Kubernetes service type
+  type: ClusterIP
+  ports:
+    # Port 9000 is the main MinIO API port
+    - port: 9000
+      targetPort: 9000
+      protocol: TCP
+  # This selector links the service directly to the running MinIO deployment pod
+  selector:
+    app: minio-deployment
+

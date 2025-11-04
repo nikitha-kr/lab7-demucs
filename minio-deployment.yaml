@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # This name is crucial for the service to find the pod
+  name: minio-deployment
+  labels:
+    # This label MUST match the selector in your minio-service-fixed.yaml
+    app: minio-deployment
+spec:
+  selector:
+    matchLabels:
+      app: minio-deployment
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: minio-deployment
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio
+        command: ["/bin/bash", "-c"]
+        args: ["minio server /data --console-address :9001"]
+        resources:
+          requests:
+            memory: "0.5Gi"
+        ports:
+        - containerPort: 9000 # API port
+        - containerPort: 9001 # Console port
+        env:
+        - name: MINIO_ROOT_USER
+          value: "rootuser"
+        - name: MINIO_ROOT_PASSWORD
+          value: "rootpass123"
+
+

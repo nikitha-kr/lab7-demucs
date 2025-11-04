@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rest
+  labels:
+    app: rest
+spec:
+  selector:
+    matchLabels:
+      app: rest
+  replicas: 1 # Start with a single instance
+  template:
+    metadata:
+      labels:
+        app: rest
+    spec:
+      containers:
+      - name: rest-server
+        # *** IMPORTANT: REPLACE with your actual Docker image path and tag (e.g., nikithakonankirajeswararao/demucs-rest:v1) ***
+        image: nikkikr16/demucs-rest:v1 
+        resources:
+          requests:
+            cpu: 200m
+            memory: 300Mi
+        ports:
+        - containerPort: 5000 # The port your Flask app listens on
+        env:
+        # Link to the deployed 'redis' service (internal cluster DNS name)
+        - name: REDIS_HOST
+          value: "redis"
+        - name: REDIS_PORT
+          value: "6379"
+        # Min.io connection details (using the port-forwarded name/port)
+        - name: MINIO_HOST
+          value: "minio" 
+        - name: MINIO_PORT
+          value: "9000"
+        - name: MINIO_ACCESS_KEY
+          value: "rootuser" 
+        - name: MINIO_SECRET_KEY
+          value: "rootpass123"
+
